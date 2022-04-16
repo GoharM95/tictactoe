@@ -3,7 +3,7 @@ import "./App.css";
 import Cell from "./Cell";
 
 class App extends React.Component {
-  state = { turn: "", cells: Array(9).fill(""), winner: null };
+  state = { turn: "x", cells: Array(9).fill(""), winner: null };
 
   checkForTheWiiner = (squares) => {
     const winningCombos = {
@@ -44,15 +44,22 @@ class App extends React.Component {
     const { turn, cells } = this.state;
     const squares = [...cells];
 
-    if (turn === "") {
+    const newState = {};
+
+    if (turn === "x") {
       squares[num] = "x";
-      this.setState({ turn: "o" });
+      newState.turn = "o";
+      // this.setState({ turn: "o" });
     } else {
       squares[num] = "o";
-      this.setState({ turn: "" });
+      newState.turn = "x";
+
+      // this.setState({ turn: "x" });
     }
     this.checkForTheWiiner(squares);
-    this.setState({ cells: squares });
+    // this.setState({ cells: squares });
+    newState.cells = squares;
+    this.setState(newState);
   };
   // one setState call
 
@@ -68,19 +75,55 @@ class App extends React.Component {
         <table>
           <tbody>
             <tr>
-              <Cell cells={cells} handleClick={this.handleClick} num={0} />
-              <Cell cells={cells} handleClick={this.handleClick} num={1} />
-              <Cell cells={cells} handleClick={this.handleClick} num={2} />
+              <Cell
+                cellValue={cells[0]}
+                handleClick={this.handleClick}
+                num={0}
+              />
+              <Cell
+                cellValue={cells[1]}
+                handleClick={this.handleClick}
+                num={1}
+              />
+              <Cell
+                cellValue={cells[2]}
+                handleClick={this.handleClick}
+                num={2}
+              />
             </tr>
             <tr>
-              <Cell cells={cells} handleClick={this.handleClick} num={3} />
-              <Cell cells={cells} handleClick={this.handleClick} num={4} />
-              <Cell cells={cells} handleClick={this.handleClick} num={5} />
+              <Cell
+                cellValue={cells[3]}
+                handleClick={this.handleClick}
+                num={3}
+              />
+              <Cell
+                cellValue={cells[4]}
+                handleClick={this.handleClick}
+                num={4}
+              />
+              <Cell
+                cellValue={cells[5]}
+                handleClick={this.handleClick}
+                num={5}
+              />
             </tr>
             <tr>
-              <Cell cells={cells} handleClick={this.handleClick} num={6} />
-              <Cell cells={cells} handleClick={this.handleClick} num={7} />
-              <Cell cells={cells} handleClick={this.handleClick} num={8} />
+              <Cell
+                cellValue={cells[6]}
+                handleClick={this.handleClick}
+                num={6}
+              />
+              <Cell
+                cellValue={cells[7]}
+                handleClick={this.handleClick}
+                num={7}
+              />
+              <Cell
+                cellValue={cells[8]}
+                handleClick={this.handleClick}
+                num={8}
+              />
             </tr>
           </tbody>
         </table>
