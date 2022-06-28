@@ -3,3 +3,7 @@ table {
   justify-content: center;
   margin-top: 100px;
 }
+
+.winner {
+  text-align: center;
+}

@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
 import Cell from "./Cell";
+import { connect } from "react-redux";
+import { setWinner, restartGame } from "../../store/actions";
 
 class App extends React.Component {
-  state = { turn: "x", cells: Array(9).fill(""), winner: null };
-
-  checkForTheWiiner = (squares) => {
+  checkForTheWinner = (cells) => {
     const winningCombos = {
       across: [
         [0, 1, 2],
@@ -24,118 +24,87 @@ class App extends React.Component {
     };
 
     for (let combo in winningCombos) {
-      winningCombos[combo].forEach((pattern) => {
+      const winner = winningCombos[combo].find((pattern) => {
         if (
-          squares[pattern[0]] === "" ||
-          squares[pattern[1]] === "" ||
-          squares[pattern[2]] === ""
+          cells[pattern[0]] === cells[pattern[1]] &&
+          cells[pattern[1]] === cells[pattern[2]] &&
+          cells[pattern[0]] !== ""
         ) {
-        } else if (
-          squares[pattern[0]] === squares[pattern[1]] &&
-          squares[pattern[1]] === squares[pattern[2]]
-        ) {
-          this.setState({ winner: squares[pattern[0]] });
+          return true;
         }
       });
+      if (winner) {
+        return cells[winner[0]];
+      }
     }
   };
 
-  handleClick = (num) => {
-    const { turn, cells } = this.state;
-    const squares = [...cells];
+  componentDidUpdate(prevProps, prevState) {
+    const { turn, cells, winner, setWinner } = this.props;
 
-    const newState = {};
-
-    if (turn === "x") {
-      squares[num] = "x";
-      newState.turn = "o";
-      // this.setState({ turn: "o" });
-    } else {
-      squares[num] = "o";
-      newState.turn = "x";
-
-      // this.setState({ turn: "x" });
+    if (prevProps.winner !== winner) {
+      alert(`winner is ${winner}`);
     }
-    this.checkForTheWiiner(squares);
-    // this.setState({ cells: squares });
-    newState.cells = squares;
-    this.setState(newState);
-  };
-  // one setState call
 
-  handleRestart = () => {
-    this.setState({ winner: null });
-    this.setState({ cells: Array(9).fill("") });
-  };
+    if (prevProps.turn !== turn) {
+      const newWinner = this.checkForTheWinner(cells);
+      if (newWinner) {
+        setWinner(newWinner);
+      }
+    }
+  }
 
   render() {
-    const { cells, winner } = this.state;
+    const { winner } = this.props;
     return (
       <div className="container">
         <table>
           <tbody>
             <tr>
-              <Cell
-                cellValue={cells[0]}
-                handleClick={this.handleClick}
-                num={0}
-              />
-              <Cell
-                cellValue={cells[1]}
-                handleClick={this.handleClick}
-                num={1}
-              />
-              <Cell
-                cellValue={cells[2]}
-                handleClick={this.handleClick}
-                num={2}
-              />
+              <Cell num={0} />
+              <Cell num={1} />
+              <Cell num={2} />
             </tr>
             <tr>
-              <Cell
-                cellValue={cells[3]}
-                handleClick={this.handleClick}
-                num={3}
-              />
-              <Cell
-                cellValue={cells[4]}
-                handleClick={this.handleClick}
-                num={4}
-              />
-              <Cell
-                cellValue={cells[5]}
-                handleClick={this.handleClick}
-                num={5}
-              />
+              <Cell num={3} />
+              <Cell num={4} />
+              <Cell num={5} />
             </tr>
             <tr>
-              <Cell
-                cellValue={cells[6]}
-                handleClick={this.handleClick}
-                num={6}
-              />
-              <Cell
-                cellValue={cells[7]}
-                handleClick={this.handleClick}
-                num={7}
-              />
-              <Cell
-                cellValue={cells[8]}
-                handleClick={this.handleClick}
-                num={8}
-              />
+              <Cell num={6} />
+              <Cell num={7} />
+              <Cell num={8} />
             </tr>
           </tbody>
         </table>
         {winner && (
-          <>
+          <div className="winner">
             <p>{winner} is the winner!</p>
-            <button onClick={() => this.handleRestart()}>Play Again!</button>
-          </>
+            <button onClick={() => this.props.restartGame()}>
+              Play Again!
+            </button>
+          </div>
         )}
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    turn: state.turn,
+    winner: state.winner,
+    cells: state.cells,
+  };
+};
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setWinner: (winner) => {
+//       const action = setWinner(winner);
+//       dispatch(action);
+//     },
+//   };
+// };
+
+export default connect(mapStateToProps, { setWinner, restartGame })(App);
