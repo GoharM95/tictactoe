@@ -1,4 +1,9 @@
-const initialState = { turn: "x", cells: Array(9).fill(""), winner: null };
+const initialState = {
+  turn: "x",
+  cells: Array(9).fill(""),
+  winner: null,
+  isDraw: false,
+};
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -18,6 +23,9 @@ const reducer = (state = initialState, action) => {
         winner: null,
       };
       return stateAfterRestart;
+    case "SET_DRAW":
+      const newDrawState = { ...state, isDraw: action.payload };
+      return newDrawState;
     default:
       return state;
   }

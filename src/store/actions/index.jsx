@@ -17,3 +17,10 @@ export const restartGame = () => {
     type: "RESTART_GAME",
   };
 };
+
+export const setDraw = (isDraw) => {
+  return {
+    type: "SET_DRAW",
+    payload: isDraw,
+  };
+};
